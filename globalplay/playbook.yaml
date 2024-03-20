@@ -1,0 +1,43 @@
+---
+- name: Install nvm, npm, and pm2
+  hosts: all
+  become: true 
+
+  tasks:
+    - name: Install curl (required for nvm)
+      ansible.builtin.package:
+        name: curl
+        state: present
+
+    - name: Download and install nvm
+      ansible.builtin.shell: >
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm"
+
+    - name: Set up nvm environment variables
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+      args:
+        executable: bash
+
+    - name: Install Node.js using nvm
+      ansible.builtin.shell: |
+        export NVM_DIR="{{ ansible_env.HOME }}/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        nvm install 14  # Replace with the desired Node.js version
+      args:
+        executable: bash
+      environment:
+        NVM_DIR: "{{ ansible_env.HOME }}/.nvm"
+        HOME: "{{ ansible_env.HOME }}"
+
+    - name: Install npm packages globally
+      ansible.builtin.npm:
+        name: "{{ item }}"
+        global: yes
+      loop:
+        - pm2  
