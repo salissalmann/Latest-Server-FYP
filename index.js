@@ -15,6 +15,70 @@ app.use(cors(
     }
 ));
 
+app.get('/images', async (req, res) => {
+    try {
+        const response = await fetch('https://strictly-relaxed-flea.ngrok-free.app/images', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const imageData = await response.json();
+        res.status(200).send(imageData.data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: 'Error getting images', success: false });
+    }
+})
+
+app.get('/flavors', async (req, res) => {
+    try {
+        const response = await fetch('https://strictly-relaxed-flea.ngrok-free.app/flavors', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const flavorData = await response.json();
+        res.status(200).send(flavorData.data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: 'Error getting flavors', success: false });
+    }
+})
+
+app.get('/networks', async (req, res) => {
+    try {
+        const response = await fetch('https://strictly-relaxed-flea.ngrok-free.app/networks', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const networkData = await response.json();
+        res.status(200).send(networkData.data);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: 'Error getting networks', success: false });
+    }
+});
+
+app.post('/create-instance', async (req, res) => {
+    try {
+        const { name, image, flavor, network } = req.body;
+        const response = await fetch(`https://strictly-relaxed-flea.ngrok-free.app/createServer/${name}/${flavor}/${image}/${network}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const instanceData = await response.json();
+        res.status(200).send({message: 'Instance created successfully', success: true, data: instanceData});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: 'Error creating instance', success: false });
+    }
+});
 
 
 // Routes
@@ -940,7 +1004,7 @@ app.post('/create-empty-file', async (req, res) => {
             }
 
             // Execute the second command after the first one completes
-            const command2 ="" 
+            const command2 = ""
 
             exec(command2, (error2, stdout2, stderr2) => {
                 if (error2) {
@@ -1044,7 +1108,7 @@ app.post('/api/actions/addPipeline', async (req, res) => {
 
         console.log(req.body);
         const Token = ""
-        
+
         const command1 = `cd ~ && git clone https://github.com/${username}/${repository} && cd ${repository} && mkdir -p .github/workflows && cd .github/workflows && touch main.yml && echo '${yamlContent}' > main.yml && git add . && git commit -m "Workflow file created"`;
 
         exec(command1, (error, stdout, stderr) => {
@@ -1329,7 +1393,7 @@ app.post('/api/ssh/run-command', async (req, res) => {
                 stream.write(`${runCommand}\n`);
                 stream.write('exit\n');
             });
-        
+
         }).connect({
             host,
             port,
@@ -1344,7 +1408,7 @@ app.post('/api/ssh/run-command', async (req, res) => {
 
 
 
-    
+
 //Add Reverse Proxy to Nginx on given port
 app.post('/api/ssh/reverse-proxy', async (req, res) => {
     try {
@@ -1415,7 +1479,7 @@ const GetNginxConfig = (domain, portNumber) => {
     }`
 }
 
-//React 
+//React
 //npm install
 //npm run build
 //pm2 serve build 4000 --name myapp
@@ -1426,7 +1490,7 @@ const GetNginxConfig = (domain, portNumber) => {
 //serve dist
 //pm2 serve dist 4000 --name myapp
 
-//Vue + React 
+//Vue + React
 //npm install
 //npm run build
 //serve dist
