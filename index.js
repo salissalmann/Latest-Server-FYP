@@ -73,7 +73,8 @@ app.post('/create-instance', async (req, res) => {
             }
         });
         const instanceData = await response.json();
-        res.status(200).send({message: 'Instance created successfully', success: true, data: instanceData});
+        console.log(instanceData);
+        res.status(200).send({message: 'Instance created successfully', success: true, instanceData});
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: 'Error creating instance', success: false });
